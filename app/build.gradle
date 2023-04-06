@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'edu.gitlab.datalog'
+    namespace 'com.example.datalog'
     compileSdk 33
 
     defaultConfig {
-        applicationId "edu.gitlab.datalog"
+        applicationId "com.example.datalog"
         minSdk 26
         targetSdk 33
         versionCode 1
