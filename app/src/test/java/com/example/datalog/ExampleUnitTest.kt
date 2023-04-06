@@ -1,4 +1,4 @@
-package edu.gitlab.datalog
+package com.example.datalog
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package edu.gitlab.datalog
+package com.example.datalog
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

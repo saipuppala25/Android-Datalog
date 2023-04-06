@@ -1,4 +1,4 @@
-package edu.gitlab.datalog
+package com.example.datalog
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("edu.gitlab.datalog", appContext.packageName)
+        assertEquals("com.example.datalog", appContext.packageName)
     }
 }
