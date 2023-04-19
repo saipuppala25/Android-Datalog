@@ -52,7 +52,6 @@ class AppListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

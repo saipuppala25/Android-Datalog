@@ -1,10 +1,13 @@
 package com.example.datalog
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.navigation.fragment.findNavController
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,6 +38,17 @@ class appDetailsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_app_details, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val trackers = view.findViewById<Button>(R.id.trackers)
+
+        trackers.setOnClickListener {
+            Log.d("DetailsFragment", "Track button was clicked")
+            findNavController().navigate(R.id.action_appDetailsFragment_to_trackersFragment)
+        }
     }
 
     companion object {
