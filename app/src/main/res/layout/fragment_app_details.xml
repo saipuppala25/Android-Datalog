@@ -23,7 +23,7 @@
         android:id="@+id/appIcon"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginStart="80dp"
+        android:layout_marginStart="60dp"
         android:layout_marginTop="16dp"
         android:src="@android:drawable/sym_def_app_icon"
         app:layout_constraintStart_toStartOf="parent"
