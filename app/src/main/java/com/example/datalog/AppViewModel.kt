@@ -5,6 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 
 class AppViewModel (application : Application) : AndroidViewModel(application) {
 
-    var apps = emptyList<AppItem>()
+    var apps = mutableListOf<AppItem>()
 
 }

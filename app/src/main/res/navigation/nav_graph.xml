@@ -18,5 +18,14 @@
         android:id="@+id/appListFragment"
         android:name="com.example.datalog.AppListFragment"
         android:label="fragment_app_list"
-        tools:layout="@layout/fragment_app_list" />
+        tools:layout="@layout/fragment_app_list" >
+        <action
+            android:id="@+id/action_appListFragment_to_appDetailsFragment"
+            app:destination="@id/appDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/appDetailsFragment"
+        android:name="com.example.datalog.appDetailsFragment"
+        android:label="fragment_app_details"
+        tools:layout="@layout/fragment_app_details" />
 </navigation>

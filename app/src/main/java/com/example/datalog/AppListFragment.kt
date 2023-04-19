@@ -1,12 +1,17 @@
 package com.example.datalog
 
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
+import android.widget.ImageView
 import android.widget.SearchView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.datalog.databinding.FragmentAppListBinding
 
 /**
  * A simple [Fragment] subclass.
@@ -14,32 +19,39 @@ import androidx.recyclerview.widget.RecyclerView
  * create an instance of this fragment.
  */
 class AppListFragment : Fragment() {
+    private var _binding: FragmentAppListBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel: AppViewModel by activityViewModels()
 
     private lateinit var adapter: AppListAdapter
 
-    private lateinit var recyclerView: RecyclerView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        _binding = FragmentAppListBinding.inflate(inflater, container, false)
+        val v = binding.root
+
+        var recyclerView: RecyclerView = binding.appList
+        val packageManager: PackageManager = recyclerView.context.packageManager
+        val apps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+            .filter { !it.isSystemApp }
+
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        val appAdapter = AppListAdapter(apps, packageManager, viewModel)
+        recyclerView.adapter = appAdapter
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_app_list, container, false)
+        return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView = view.findViewById(R.id.appList)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = AppListAdapter(viewModel)
-        recyclerView.adapter = adapter
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -77,5 +89,38 @@ class AppListFragment : Fragment() {
 
         super.onCreateOptionsMenu(menu, inflater)
     }
+
+    class AppListAdapter (val apps: List<ApplicationInfo>, val packageManager: PackageManager, val viewModel: AppViewModel):   RecyclerView.Adapter<AppListAdapter.AppViewHolder>() {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.card_view, parent, false)
+            return AppViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: AppViewHolder, position: Int) {
+            val app = apps[position]
+            holder.appName.text = app.loadLabel(packageManager)
+            holder.appIcon.setImageDrawable(app.loadIcon(packageManager))
+            val appItem: AppItem = AppItem(app.loadLabel(packageManager).toString(),
+            "", app.loadIcon(packageManager))
+            viewModel.apps.add(appItem)
+            holder.itemView.setOnClickListener{
+
+            }
+        }
+
+        override fun getItemCount(): Int {
+            return apps.size
+        }
+
+        class AppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val appName: TextView = view.findViewById(R.id.title)
+            val appIcon: ImageView = view.findViewById(R.id.poster)
+
+        }
+    }
+
+    val ApplicationInfo.isSystemApp: Boolean
+        get() = (flags and ApplicationInfo.FLAG_SYSTEM) != 0
 
 }
