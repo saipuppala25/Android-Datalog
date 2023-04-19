@@ -27,5 +27,14 @@
         android:id="@+id/appDetailsFragment"
         android:name="com.example.datalog.appDetailsFragment"
         android:label="fragment_app_details"
-        tools:layout="@layout/fragment_app_details" />
+        tools:layout="@layout/fragment_app_details" >
+        <action
+            android:id="@+id/action_appDetailsFragment_to_trackersFragment"
+            app:destination="@id/trackersFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/trackersFragment"
+        android:name="com.example.datalog.TrackersFragment"
+        android:label="fragment_trackers"
+        tools:layout="@layout/fragment_trackers" />
 </navigation>
