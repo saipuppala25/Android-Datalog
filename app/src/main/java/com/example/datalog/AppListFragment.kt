@@ -7,6 +7,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -90,7 +91,7 @@ class AppListFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    class AppListAdapter (val apps: List<ApplicationInfo>, val packageManager: PackageManager, val viewModel: AppViewModel):   RecyclerView.Adapter<AppListAdapter.AppViewHolder>() {
+    inner class AppListAdapter (val apps: List<ApplicationInfo>, val packageManager: PackageManager, val viewModel: AppViewModel):   RecyclerView.Adapter<AppListAdapter.AppViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.card_view, parent, false)
@@ -103,9 +104,10 @@ class AppListFragment : Fragment() {
             holder.appIcon.setImageDrawable(app.loadIcon(packageManager))
             val appItem: AppItem = AppItem(app.loadLabel(packageManager).toString(),
             "", app.loadIcon(packageManager))
-            viewModel.apps.add(appItem)
+            viewModel.addApp(appItem)
             holder.itemView.setOnClickListener{
-
+                view?.findNavController()?.navigate(R.id.action_appListFragment_to_appDetailsFragment,
+                bundleOf("id" to position))
             }
         }
 
@@ -113,12 +115,14 @@ class AppListFragment : Fragment() {
             return apps.size
         }
 
-        class AppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        inner class AppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val appName: TextView = view.findViewById(R.id.title)
             val appIcon: ImageView = view.findViewById(R.id.poster)
 
         }
+
     }
+
 
     val ApplicationInfo.isSystemApp: Boolean
         get() = (flags and ApplicationInfo.FLAG_SYSTEM) != 0
