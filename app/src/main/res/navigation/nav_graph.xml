@@ -31,10 +31,26 @@
         <action
             android:id="@+id/action_appDetailsFragment_to_trackersFragment"
             app:destination="@id/trackersFragment" />
+        <action
+            android:id="@+id/action_appDetailsFragment_to_permissionFragment"
+            app:destination="@id/permissionFragment" />
+        <action
+            android:id="@+id/action_appDetailsFragment_to_notificationFragment"
+            app:destination="@id/notificationFragment" />
     </fragment>
     <fragment
         android:id="@+id/trackersFragment"
         android:name="com.example.datalog.TrackersFragment"
         android:label="fragment_trackers"
         tools:layout="@layout/fragment_trackers" />
+    <fragment
+        android:id="@+id/permissionFragment"
+        android:name="com.example.datalog.PermissionFragment"
+        android:label="fragment_permission"
+        tools:layout="@layout/fragment_permission" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.example.datalog.NotificationFragment"
+        android:label="fragment_notification"
+        tools:layout="@layout/fragment_notification" />
 </navigation>

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.datalog.databinding.FragmentAppDetailsBinding
@@ -35,10 +36,23 @@ class appDetailsFragment : Fragment() {
         binding.appIcon.setImageDrawable(viewModel.apps.get(id!!).icon)
 
         val trackers = view.findViewById<Button>(R.id.trackers)
+        val permissions = view.findViewById<Button>(R.id.permissions)
+        val notifications = view.findViewById<Button>(R.id.notifications)
 
         trackers.setOnClickListener {
             Log.d("DetailsFragment", "Track button was clicked")
             findNavController().navigate(R.id.action_appDetailsFragment_to_trackersFragment)
+        }
+
+        permissions.setOnClickListener{
+            Log.d("DetailsFragment", "Permission button was clicked")
+            findNavController().navigate(R.id.action_appDetailsFragment_to_permissionFragment)
+            bundleOf("id" to id)
+        }
+
+        notifications.setOnClickListener{
+            Log.d("DetailsFragment", "Notification button was clicked")
+            findNavController().navigate(R.id.action_appDetailsFragment_to_notificationFragment)
         }
     }
 

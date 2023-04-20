@@ -108,6 +108,7 @@ class AppListFragment : Fragment() {
             holder.itemView.setOnClickListener{
                 view?.findNavController()?.navigate(R.id.action_appListFragment_to_appDetailsFragment,
                 bundleOf("id" to position))
+                viewModel.currentPosition = position
             }
         }
 
@@ -116,7 +117,7 @@ class AppListFragment : Fragment() {
         }
 
         inner class AppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val appName: TextView = view.findViewById(R.id.title)
+            val appName: TextView = view.findViewById(R.id.appTitle)
             val appIcon: ImageView = view.findViewById(R.id.poster)
 
         }
