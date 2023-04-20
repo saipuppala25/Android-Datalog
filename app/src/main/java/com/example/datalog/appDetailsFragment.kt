@@ -38,6 +38,7 @@ class appDetailsFragment : Fragment() {
         val trackers = view.findViewById<Button>(R.id.trackers)
         val permissions = view.findViewById<Button>(R.id.permissions)
         val notifications = view.findViewById<Button>(R.id.notifications)
+        val like = view.findViewById<Button>(R.id.likeButton)
 
         trackers.setOnClickListener {
             Log.d("DetailsFragment", "Track button was clicked")
@@ -54,6 +55,12 @@ class appDetailsFragment : Fragment() {
             Log.d("DetailsFragment", "Notification button was clicked")
             findNavController().navigate(R.id.action_appDetailsFragment_to_notificationFragment)
         }
+
+        like.setOnClickListener{
+            Log.d("DetailsFragment", "Like button was clicked")
+        }
+
+
     }
 
 
