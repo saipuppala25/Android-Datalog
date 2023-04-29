@@ -1,7 +1,5 @@
 package com.example.datalog
 
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
@@ -10,9 +8,11 @@ import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.datalog.databinding.FragmentAppListBinding
 
 /**
@@ -39,13 +39,21 @@ class AppListFragment : Fragment() {
         val v = binding.root
 
         var recyclerView: RecyclerView = binding.appList
-        val packageManager: PackageManager = recyclerView.context.packageManager
-        val apps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
-            .filter { !it.isSystemApp }
 
         recyclerView.layoutManager = LinearLayoutManager(context)
-        val appAdapter = AppListAdapter(apps, packageManager, viewModel)
+        val appAdapter = AppListAdapter()
         recyclerView.adapter = appAdapter
+
+        viewModel.allApps.observe(
+            viewLifecycleOwner,
+            Observer<List<AppItemStorage>> {apps ->
+                apps?.let{appAdapter.setApps(it)}
+            }
+        )
+
+        binding.refresh.setOnClickListener {
+            viewModel.refreshApps()
+        }
         // Inflate the layout for this fragment
         return v
     }
@@ -91,8 +99,14 @@ class AppListFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    inner class AppListAdapter (val apps: List<ApplicationInfo>, val packageManager: PackageManager, val viewModel: AppViewModel):   RecyclerView.Adapter<AppListAdapter.AppViewHolder>() {
+    inner class AppListAdapter ():   RecyclerView.Adapter<AppListAdapter.AppViewHolder>() {
 
+        var apps = emptyList<AppItemStorage>()
+
+        internal fun setApps(apps: List<AppItemStorage>) {
+            this.apps = apps
+            notifyDataSetChanged()
+        }
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.card_view, parent, false)
             return AppViewHolder(view)
@@ -100,15 +114,13 @@ class AppListFragment : Fragment() {
 
         override fun onBindViewHolder(holder: AppViewHolder, position: Int) {
             val app = apps[position]
-            holder.appName.text = app.loadLabel(packageManager)
-            holder.appIcon.setImageDrawable(app.loadIcon(packageManager))
-            val appItem: AppItem = AppItem(app.loadLabel(packageManager).toString(),
-            "", app.loadIcon(packageManager))
-            viewModel.addApp(appItem)
+            holder.appName.text = app.appName
+            Glide.with(holder.itemView.context)
+                .load(app.appImagePath)
+                .into(holder.appIcon)
             holder.itemView.setOnClickListener{
                 view?.findNavController()?.navigate(R.id.action_appListFragment_to_appDetailsFragment,
-                bundleOf("id" to position))
-                viewModel.currentPosition = position
+                bundleOf("id" to app.id))
             }
         }
 
@@ -123,9 +135,5 @@ class AppListFragment : Fragment() {
         }
 
     }
-
-
-    val ApplicationInfo.isSystemApp: Boolean
-        get() = (flags and ApplicationInfo.FLAG_SYSTEM) != 0
 
 }
