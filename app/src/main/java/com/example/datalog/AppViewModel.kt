@@ -5,10 +5,8 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 
@@ -25,7 +23,6 @@ class AppViewModel (application : Application) : AndroidViewModel(application) {
 
     val allApps: LiveData<List<AppItemStorage>>
 
-    var currentPosition = 0
     val packageManager: PackageManager = application.packageManager
 
     init {
@@ -40,10 +37,11 @@ class AppViewModel (application : Application) : AndroidViewModel(application) {
         val apps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
             .filter { !it.isSystemApp }
         for (app in apps) {
-            val application: AppItemStorage = AppItemStorage(count,
+            val application = AppItemStorage(count,
                 app.loadLabel(packageManager).toString(),
-                app.publicSourceDir)
+                app.packageName)
             insert(application)
+            count++
         }
 
 
@@ -56,13 +54,13 @@ class AppViewModel (application : Application) : AndroidViewModel(application) {
     fun insert(app: AppItemStorage) = scope.launch (Dispatchers.IO) {
         repository.insert(app)
     }
-    fun addApp(newAppItem: AppItem) {
-        if (apps.contains(newAppItem)) {
-            return
+
+    suspend fun getApp(id: Int): AppItemStorage {
+        val deferred: Deferred<AppItemStorage> = viewModelScope.async {
+            repository.getAppById(id)
         }
-        else {
-            apps.add(newAppItem)
-        }
+        return deferred.await()
+
     }
 
 

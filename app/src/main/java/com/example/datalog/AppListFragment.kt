@@ -1,5 +1,6 @@
 package com.example.datalog
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
@@ -25,8 +26,9 @@ class AppListFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: AppViewModel by activityViewModels()
+    lateinit var packageManager: PackageManager
 
-    private lateinit var adapter: AppListAdapter
+
 
 
 
@@ -38,7 +40,11 @@ class AppListFragment : Fragment() {
         _binding = FragmentAppListBinding.inflate(inflater, container, false)
         val v = binding.root
 
+
+
         var recyclerView: RecyclerView = binding.appList
+
+        packageManager = recyclerView.context.packageManager
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         val appAdapter = AppListAdapter()
@@ -115,9 +121,9 @@ class AppListFragment : Fragment() {
         override fun onBindViewHolder(holder: AppViewHolder, position: Int) {
             val app = apps[position]
             holder.appName.text = app.appName
-            Glide.with(holder.itemView.context)
-                .load(app.appImagePath)
-                .into(holder.appIcon)
+            holder.appIcon.setImageDrawable(packageManager.getApplicationIcon
+                (packageManager.getApplicationInfo(app.appImagePath, 0)))
+            holder.packageName.text = app.appImagePath
             holder.itemView.setOnClickListener{
                 view?.findNavController()?.navigate(R.id.action_appListFragment_to_appDetailsFragment,
                 bundleOf("id" to app.id))
@@ -131,6 +137,7 @@ class AppListFragment : Fragment() {
         inner class AppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val appName: TextView = view.findViewById(R.id.appTitle)
             val appIcon: ImageView = view.findViewById(R.id.poster)
+            val packageName: TextView = view.findViewById((R.id.packageName))
 
         }
 
