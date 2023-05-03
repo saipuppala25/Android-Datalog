@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.security.Permission
 
-class PermissionListAdapter(private val permissions: List<Permission>) :
+class PermissionListAdapter(private val permissions: List<PermissionItem>) :
     RecyclerView.Adapter<PermissionListAdapter.PermissionViewHolder>() {
 
     class PermissionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -22,6 +22,7 @@ class PermissionListAdapter(private val permissions: List<Permission>) :
 
     override fun onBindViewHolder(holder: PermissionViewHolder, position: Int) {
         val permission = permissions[position]
+        notifyDataSetChanged()
 //        holder.packageName.text = permission.packageName
 //        holder.permissionName.text = permission.permissionName
     }

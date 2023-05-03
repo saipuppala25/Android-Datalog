@@ -1,6 +1,8 @@
 package com.example.datalog
 
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.pm.PermissionInfo
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,6 +12,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datalog.databinding.FragmentAppListBinding
 import com.example.datalog.databinding.FragmentPermissionBinding
+import java.security.Permission
+import kotlin.collections.ArrayList
 
 
 /**
@@ -24,7 +28,13 @@ class PermissionFragment : Fragment() {
 
     private val viewModel: AppViewModel by activityViewModels()
 
-    private lateinit var adapter: AppListAdapter
+    private lateinit var adapter: PermissionListAdapter
+
+    private val permissionList = ArrayList<PermissionItem>()
+
+    private lateinit var permissionItem: PermissionItem
+
+    private lateinit var permissionInfo: PermissionInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +53,30 @@ class PermissionFragment : Fragment() {
 
         val recyclerView: RecyclerView = binding.permissionList
 
-        val packageManager: PackageManager = recyclerView.context.packageManager
+        adapter = PermissionListAdapter(permissionList)
+
+        var packageManager: PackageManager = recyclerView.context.packageManager
+
+        var packageInfo: PackageInfo? = null
+
+        try {
+            packageInfo = packageManager.getPackageInfo(BuildConfig.APPLICATION_ID, PackageManager.GET_PERMISSIONS)
+        }
+        catch (e: Exception){
+            e.printStackTrace()
+        }
+
+        if(packageInfo?.requestedPermissions != null) {
+            for(permission in packageInfo.requestedPermissions) run {
+                permissionInfo =
+                    packageManager.getPermissionInfo(permission, PackageManager.GET_META_DATA)
+                permissionItem.packageName = BuildConfig.APPLICATION_ID
+                permissionItem.permissionName = permissionInfo.name
+                permissionList.add(permissionItem)
+                adapter.notifyDataSetChanged()
+            }
+        }
+
 
 //        val packageInfo = packageManager.getPackageInfo(viewModel.apps[id!!].packageName, PackageManager.GET_PERMISSIONS)
 
