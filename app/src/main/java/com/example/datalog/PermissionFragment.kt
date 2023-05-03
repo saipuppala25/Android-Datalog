@@ -1,19 +1,19 @@
 package com.example.datalog
 
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.content.pm.PermissionInfo
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.datalog.databinding.FragmentAppListBinding
 import com.example.datalog.databinding.FragmentPermissionBinding
-import java.security.Permission
-import kotlin.collections.ArrayList
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 /**
@@ -28,13 +28,9 @@ class PermissionFragment : Fragment() {
 
     private val viewModel: AppViewModel by activityViewModels()
 
-    private lateinit var adapter: PermissionListAdapter
+    lateinit var packageManager: PackageManager
 
-    private val permissionList = ArrayList<PermissionItem>()
-
-    private lateinit var permissionItem: PermissionItem
-
-    private lateinit var permissionInfo: PermissionInfo
+    lateinit var permissionAdapter: PermissionListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,44 +45,13 @@ class PermissionFragment : Fragment() {
         _binding = FragmentPermissionBinding.inflate(inflater, container, false)
         val v = binding.root
 
-        var id = this.arguments?.getInt("id")
-
-        val recyclerView: RecyclerView = binding.permissionList
-
-        adapter = PermissionListAdapter(permissionList)
-
-        var packageManager: PackageManager = recyclerView.context.packageManager
-
-        var packageInfo: PackageInfo? = null
-
-        try {
-            packageInfo = packageManager.getPackageInfo(BuildConfig.APPLICATION_ID, PackageManager.GET_PERMISSIONS)
-        }
-        catch (e: Exception){
-            e.printStackTrace()
-        }
-
-        if(packageInfo?.requestedPermissions != null) {
-            for(permission in packageInfo.requestedPermissions) run {
-                permissionInfo =
-                    packageManager.getPermissionInfo(permission, PackageManager.GET_META_DATA)
-                permissionItem.packageName = BuildConfig.APPLICATION_ID
-                permissionItem.permissionName = permissionInfo.name
-                permissionList.add(permissionItem)
-                adapter.notifyDataSetChanged()
-            }
-        }
+        var recyclerView = binding.permissionList
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        packageManager = recyclerView.context.packageManager
+        permissionAdapter = PermissionListAdapter()
+        recyclerView.adapter = permissionAdapter
 
 
-//        val packageInfo = packageManager.getPackageInfo(viewModel.apps[id!!].packageName, PackageManager.GET_PERMISSIONS)
-
-//        val permissions = packageInfo.requestedPermissions
-
-//        if (permissions != null) {
-//            for (permission in permissions) {
-//
-//            }
-//        }
 
 
         return v
@@ -94,6 +59,50 @@ class PermissionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var id = this.arguments?.getInt("id")
+
+        CoroutineScope(Dispatchers.Main).launch {
+            var app = viewModel.getApp(id!!)
+            val packageInfo = packageManager.getPackageInfo(app.packageName, PackageManager.GET_PERMISSIONS)
+            val permissions = packageInfo.requestedPermissions
+
+            var permissionList = emptyList<String>()
+
+            permissionList = permissions.toList()
+            if (permissions != null && permissions.isNotEmpty()) {
+                permissionList = permissions.toList()
+            }
+            permissionAdapter.setList(permissionList)
+
+        }
+    }
+
+    inner class PermissionListAdapter() :
+        RecyclerView.Adapter<PermissionListAdapter.PermissionViewHolder>() {
+
+        var permissions = emptyList<String>()
+        inner class PermissionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val permissionName: TextView = itemView.findViewById(R.id.permission)
+        }
+
+        fun setList(permissions: List<String>) {
+            this.permissions = permissions
+            notifyDataSetChanged()
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PermissionViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.permission_item, parent, false)
+            return PermissionViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: PermissionViewHolder, position: Int) {
+            val permission = permissions[position]
+            holder.permissionName.text = permission
+        }
+
+        override fun getItemCount(): Int {
+            return permissions.size
+        }
     }
 
 }

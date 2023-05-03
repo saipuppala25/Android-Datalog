@@ -13,7 +13,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.datalog.databinding.FragmentAppListBinding
 
 /**
@@ -43,6 +42,7 @@ class AppListFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         val appAdapter = AppListAdapter()
+
         recyclerView.adapter = appAdapter
 
         viewModel.allApps.observe(
@@ -157,7 +157,7 @@ class AppListFragment : Fragment() {
         }
 
         inner class AppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val appName: TextView = view.findViewById(R.id.appTitle)
+            val appName: TextView = view.findViewById(R.id.permission)
             val appIcon: ImageView = view.findViewById(R.id.poster)
             val packageName: TextView = view.findViewById((R.id.packageName))
 

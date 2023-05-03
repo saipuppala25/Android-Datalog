@@ -67,8 +67,8 @@ class appDetailsFragment : Fragment() {
 
             permissions.setOnClickListener {
                 Log.d("DetailsFragment", "Permission button was clicked")
-                findNavController().navigate(R.id.action_appDetailsFragment_to_permissionFragment)
-                bundleOf("id" to id)
+                findNavController().navigate(R.id.action_appDetailsFragment_to_permissionFragment
+                ,bundleOf("id" to id))
             }
 
             notifications.setOnClickListener {
