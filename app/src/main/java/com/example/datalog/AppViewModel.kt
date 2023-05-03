@@ -19,6 +19,10 @@ class AppViewModel (application : Application) : AndroidViewModel(application) {
 
     var apiKey = ""
 
+    var packageName = ""
+
+    var trackerNamesList = mutableListOf<String>()
+
     private var parentJob = Job()
     private val coroutineContext: CoroutineContext
         get() = parentJob + Dispatchers.Main

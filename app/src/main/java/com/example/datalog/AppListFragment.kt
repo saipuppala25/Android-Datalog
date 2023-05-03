@@ -157,7 +157,7 @@ class AppListFragment : Fragment() {
         }
 
         inner class AppViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val appName: TextView = view.findViewById(R.id.permission)
+            val appName: TextView = view.findViewById(R.id.tracker_name)
             val appIcon: ImageView = view.findViewById(R.id.poster)
             val packageName: TextView = view.findViewById((R.id.packageName))
 

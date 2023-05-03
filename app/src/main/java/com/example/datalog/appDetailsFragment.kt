@@ -41,6 +41,8 @@ class appDetailsFragment : Fragment() {
         CoroutineScope(Dispatchers.Main).launch {
             var app = viewModel.getApp(id!!)
 
+            viewModel.packageName = app.packageName
+
             binding.appName.text = app.appName
             binding.appIcon.setImageDrawable(packageManager.getApplicationIcon
                 (packageManager.getApplicationInfo(app.packageName, 0)))
