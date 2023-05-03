@@ -31,7 +31,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sync = view.findViewById<Button>(R.id.sync)
+        val sync = view.findViewById<Button>(R.id.next)
 
         sync.setOnClickListener {
             Log.d("HomeFragment", "Sync button was clicked")

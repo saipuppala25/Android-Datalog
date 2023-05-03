@@ -43,7 +43,7 @@ class appDetailsFragment : Fragment() {
 
             binding.appName.text = app.appName
             binding.appIcon.setImageDrawable(packageManager.getApplicationIcon
-                (packageManager.getApplicationInfo(app.appImagePath, 0)))
+                (packageManager.getApplicationInfo(app.packageName, 0)))
 
             val trackers = view.findViewById<Button>(R.id.trackers)
             val permissions = view.findViewById<Button>(R.id.permissions)

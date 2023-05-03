@@ -73,4 +73,9 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     kapt 'androidx.lifecycle:lifecycle-compiler:2.5.1'
 
+    //securely loading api key
+    implementation 'io.github.cdimascio:dotenv-java:2.2.0'
+
+
+
 }

@@ -6,11 +6,18 @@ import android.content.pm.PackageManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 
 class AppViewModel (application : Application) : AndroidViewModel(application) {
+
+    var apiKey = ""
 
     private var parentJob = Job()
     private val coroutineContext: CoroutineContext

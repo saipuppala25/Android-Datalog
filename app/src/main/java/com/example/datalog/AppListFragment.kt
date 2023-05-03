@@ -28,11 +28,6 @@ class AppListFragment : Fragment() {
     private val viewModel: AppViewModel by activityViewModels()
     lateinit var packageManager: PackageManager
 
-
-
-
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -57,7 +52,7 @@ class AppListFragment : Fragment() {
             }
         )
 
-        binding.refresh.setOnClickListener {
+        binding.sync.setOnClickListener {
             viewModel.refreshApps()
         }
         // Inflate the layout for this fragment
@@ -122,8 +117,8 @@ class AppListFragment : Fragment() {
             val app = apps[position]
             holder.appName.text = app.appName
             holder.appIcon.setImageDrawable(packageManager.getApplicationIcon
-                (packageManager.getApplicationInfo(app.appImagePath, 0)))
-            holder.packageName.text = app.appImagePath
+                (packageManager.getApplicationInfo(app.packageName, 0)))
+            holder.packageName.text = app.packageName
             holder.itemView.setOnClickListener{
                 view?.findNavController()?.navigate(R.id.action_appListFragment_to_appDetailsFragment,
                 bundleOf("id" to app.id))
