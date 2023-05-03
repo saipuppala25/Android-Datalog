@@ -26,7 +26,6 @@ class AppViewModel (application : Application) : AndroidViewModel(application) {
 
     private val repository: AppItemRepository
 
-    var apps = mutableListOf<AppItem>()
 
     val allApps: LiveData<List<AppItemStorage>>
 
