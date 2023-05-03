@@ -55,6 +55,19 @@ class AppListFragment : Fragment() {
         binding.sync.setOnClickListener {
             viewModel.refreshApps()
         }
+        var likedClicked = false
+        binding.likedApps.setOnClickListener {
+            if (likedClicked == true) {
+                appAdapter.restore()
+                likedClicked = false
+                binding.likedApps.text = "Liked Apps"
+            }
+            else {
+                appAdapter.sortByLiked()
+                likedClicked = true
+                binding.likedApps.text = "All apps"
+            }
+        }
         // Inflate the layout for this fragment
         return v
     }
@@ -103,11 +116,25 @@ class AppListFragment : Fragment() {
     inner class AppListAdapter ():   RecyclerView.Adapter<AppListAdapter.AppViewHolder>() {
 
         var apps = emptyList<AppItemStorage>()
+        var fullList = emptyList<AppItemStorage>()
 
         internal fun setApps(apps: List<AppItemStorage>) {
-            this.apps = apps
+            this.apps = apps.sortedBy { it.appName }
+            this.fullList = apps.sortedBy { it.appName }
             notifyDataSetChanged()
         }
+
+        fun sortByLiked() {
+            restore()
+            apps = apps.filter { it.liked }
+            notifyDataSetChanged()
+        }
+
+        fun restore() {
+            apps = fullList
+            notifyDataSetChanged()
+        }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.card_view, parent, false)
             return AppViewHolder(view)

@@ -73,7 +73,8 @@ class appDetailsFragment : Fragment() {
 
             notifications.setOnClickListener {
                 Log.d("DetailsFragment", "Notification button was clicked")
-                findNavController().navigate(R.id.action_appDetailsFragment_to_notificationFragment)
+                findNavController().navigate(R.id.action_appDetailsFragment_to_notificationFragment
+                        ,bundleOf("id" to id))
             }
 
             like.setOnClickListener {
